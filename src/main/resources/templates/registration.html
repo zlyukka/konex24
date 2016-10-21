@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <link rel="SHORTCUT ICON" href="images/favicon.ico" type="image/ico"/>
+    <title>Hello people!</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" type="text/css" href="css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/common.css}" type="text/css" href="css/common.css" rel="stylesheet" />
+
+    <script th:src="@{/js/html5shiv.min.js}" src="js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="js/respond.min.js"></script>
+
+</head>
+<body>
+<!--<h1 th:inline="text">REGISTRATION new user</h1>
+<p>There will be a registration form</p>-->
+
+
+<div class="container">
+
+    <form id="logout" align="center" th:action="@{/logout}" method="post">
+
+    </form>
+
+    <form th:action="@{/registration}" action="/registration" method="POST" class="form-signin" accept-charset="utf-8">
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a href="http://www.konex.com.ua" class="header-logo">
+                    <img style="max-width: 100%; max-height: 100%; horizontal-align: middle; vertical-align: middle;" src="http://www.konex.com.ua/wp-content/themes/konex/images/header-logo.png"/>
+                </a>
+            </div>
+        </div>
+
+        <h2 align = "center" class="form-signin-heading" style="color: #337AB7; font-size: 170%">Створити обліковий запис</h2>
+
+        <p th:if="${error}" th:inline="text" class="alert alert-error" style="color: #FF0000">[[${error}]]</p>
+
+        <div class="form-group ${error != null ? 'has-error' : ''}">
+            <input type="text" name="username" class="form-control" placeholder="Логін" autofocus="true"/>
+
+            <input type="password" name="password" class="form-control" placeholder="Пароль"/>
+
+            <input type="password" name="confirmPassword" class="form-control" placeholder="Підтвердження паролю"/>
+
+            <input type="text" name="userPIB" class="form-control" placeholder="Повне ім'я"/>
+
+            <input type="text" name="mobile" class="form-control" placeholder="Мобільний телефон"/>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-6">
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Створити</button>
+            </div>
+            <div class="col-xs-6">
+                <button type="submit" form="logout" class="btn btn-lg btn-primary btn-block" >Вийти</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- /container -->
+
+<script th:src="@{/js/jquery-3.1.0.min.js}" src="js/jquery-3.1.0.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}" src="js/script.js"></script>
+</body>
+</html>

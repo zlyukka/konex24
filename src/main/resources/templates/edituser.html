@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello people!</title>
+</head>
+<body>
+
+<h1 th:inline="text">РЕДАГУВАТИ ПРОФІЛЬ</h1>
+<form method="post" th:action="@{/editUser}" modelAttribute="userEditForm">
+    <input type="hidden" name="referer" th:value="${ref}"/>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <div> ІД Користувача <input type="text" th:value="${user.getId()}" name="userId" readonly="true" /></div>
+    </div>
+    <div> Логін <input type="text" th:value="${user.getUsername()}" name="username" /></div>
+    <div> Пароль <input type="password" value="" name="password" /></div>
+    <div> Повне імя <input type="text" th:value="${user.getUserPIB()}" name="userPIB" /></div>
+    <div> Мобільний телефон <input type="text" th:value="${user.getMobile()}" name="mobile" /></div>
+    <div> email <input type="text" th:value="${user.geteMail()}" name="eMail" /></div>
+    <div> Дата народження <input type="text" th:value="${user.getBirthday()}" name="newBirthday" /></div>
+    <div> Стать <input type="text" th:value="${user.getSex()}" name="sex" /></div>
+    <div> Рейтинг <input type="text" th:value="${user.getRating()}" name="rating" disabled="true"/></div>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <div> Аватарка <input type="text" th:value="${user.getAvatara()}" name="avatara" /></div>
+        <div> Дата реєстрації <input type="text" th:value="${user.getRegTime()}" name="reg_time" disabled="true"/></div>
+        <div> Тип користувача <input type="text" th:value="${user.getUserType()}" name="user_type" /></div>
+        <div> Сторінка змінювалась? <input type="text" th:value="${user.getUpdated()}" name="updated" disabled="true"/></div>
+        <div> Реєстрацію підтвердженно? <input type="text" th:value="${user.getConfirmed()}" name="confirmed" disabled="true"/></div>
+    </div>
+    <input type="submit" value="Зберегти зміни"/>
+</form>
+
+
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <!--<input  type="text" th:value="${#httpServletRequest.getAttribute('userList')}"  />-->
+    <!--<form th:action="@{/userEdit}" method="post">-->
+    <!--<select name="userId" id="usId">-->
+    <!--<option  th:each="user : ${userList}" th:text="${{user.getUserPIB()}}">Us1</option>-->
+    <!--</select>-->
+    <!--</form>-->
+
+</div>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Вийти"/>
+</form>
+</body>
+</html>

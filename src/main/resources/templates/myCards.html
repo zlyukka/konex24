@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello people!</title>
+</head>
+<body>
+<form th:action="@{/addCard}" method="get">
+    <input type="submit" value="Добавить"/>
+</form>
+<ul>
+    <li th:each="card : ${cards}"  th:inline="text">[[${card.getCardName()}+' - '+${card.getCardNom()}+' - '+${card.getCardType().getName()}]] <a th:href="'/cardEdit/'+${card.getId()}"> Редактировать</a>&nbsp;&nbsp;<a th:href="@{/cardDelete/}+${card.getId()}">Удалить</a></li>
+</ul>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Вийти"/>
+</form>
+</body>
+</html>

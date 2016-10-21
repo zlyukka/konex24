@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <title>Додання карти!</title>
+</head>
+<body>
+    <form th:action="@{/addCardType}" modelAttribute="cardForm" method="post">
+        <div> Тип карты <input type="text" value="" name="name" /></div>
+        <input type="submit" value="Добавить карту"/>
+    </form>
+</body>
+</html>

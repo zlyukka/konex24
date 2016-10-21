@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="SHORTCUT ICON" href="images/favicon.ico" type="image/ico"/>
+    <title>Konex 24 Login</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" type="text/css" href="css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/common.css}" type="text/css" href="css/common.css" rel="stylesheet" />
+
+    <script th:src="@{/js/html5shiv.min.js}" src="js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="js/respond.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <form th:action="@{/login}" action="/login" method="POST" class="form-signin">
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a href="http://www.konex.com.ua" class="header-logo">
+                    <img style="max-width: 100%; max-height: 100%; horizontal-align: middle; vertical-align: middle;" src="http://www.konex.com.ua/wp-content/themes/konex/images/header-logo.png"/>
+                </a>
+            </div>
+        </div>
+
+        <h2 class="form-heading" style="color: #337AB7">KONEX24 Вхід</h2>
+
+        <p th:if="${param.logout}" class="alert" style="color: #FF0000">Ви вийшли з системи.</p>
+        <p th:if="${param.error}" class="alert alert-error" style="color: #FF0000">Сталася помилка! Cпробуйте ще раз.</p>
+
+
+        <div class="form-group ${error != null ? 'has-error' : ''}">
+            <!--<span>${error}</span>-->
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <!--<span>${message}</span>-->
+            <input name="username" type="text" class="form-control" placeholder="Логін"
+                   autofocus="true"/>
+            <input name="password" type="password" class="form-control" placeholder="Пароль"/>
+            <!--<input name="password" type="password" th:field="*{password}" th:class="${#fields.hasErrors('password')}? alert-error" placeholder="Пароль"/>-->
+            <!--<input class="btn btn-lg btn-primary btn-block" type="submit" value="УВІЙТИ"/>-->
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">УВІЙТИ</button>
+            <h4 class="text-center"><a th:href="@{/registration}" href="/registration">Зареєструватися</a></h4>
+        </div>
+
+    </form>
+
+</div>
+<!-- /container -->
+
+<script th:src="@{/js/jquery-3.1.0.min.js}" src="js/jquery-3.1.0.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}" src="js/script.js"></script>
+
+</body>
+</html>

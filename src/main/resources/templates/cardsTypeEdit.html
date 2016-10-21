@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello people!</title>
+</head>
+<body>
+<form th:action="@{/cardsTypeEdit}" modelAttribute="cardTypeForm" method="post">
+    <input type="text" th:value="${cardType.getId()}" name="id" readonly="true" />
+    <br/>
+    <input type="text" th:value="${cardType.getName()}" name="name" />
+    <br/>
+    <input type="submit" value="Сохранить"/>
+</form>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Вийти"/>
+</form>
+</body>
+</html>

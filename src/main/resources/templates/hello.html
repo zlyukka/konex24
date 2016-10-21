@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <title>Hello people!</title>
+</head>
+<body>
+<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+
+<!--<div sec:authorize="hasRole('ROLE_ADMIN')">-->
+        <!--<h3 style="color: #ff2f33" th:inline="text">Roles: [[${userData.getAuthorities()}]]</h3>-->
+<!--</div>-->
+
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <h3 style="color: #ff2f33">
+        <p>Logged user: <span sec:authentication="name">Bob</span></p>
+        <p>Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span></p>
+    </h3>
+</div>
+<div>
+    <h3 style="color: #094480" th:inline="text">Mobile phone: [[${userData.getMobile()}]]</h3>
+    <h3 style="color: #116180" th:inline="text">E-mail: [[${userData.geteMail()}]]</h3>
+    <h3 style="color: #0a8072" th:inline="text">Birthday: [[${userData.getBirthday()}]]</h3>
+    <h3 style="color: #1a802e" th:inline="text">Registration time: [[${userData.getRegTime()}]]</h3>
+    <h3 style="color: #318b1d" th:inline="text">User PIB: [[${userData.getUserPIB()}]]</h3>
+</div>
+<form th:action="@{/editUser}" method="post">
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <input type="text" name="userId" value="9"/>
+    </div>
+    <input type="submit" value="Редагувати"/>
+</form>
+<form th:action="@{/cards}" method="get">
+    <input type="submit" value="Мои карты"/>
+</form>
+<form th:action="@{/getCardsType}" method="get">
+    <input type="submit" value="Типы карт"/>
+</form>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Вийти"/>
+</form>
+
+</body>
+</html>

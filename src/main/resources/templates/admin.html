@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello ADMIN!</title>
+    <link th:href="@{/css/bootstrap.css}" type="text/css" href="css/bootstrap.css" rel="stylesheet" />
+    <script th:src="@{/js/jquery-3.1.0.min.js}" src="js/jquery-3.1.0.min.js"></script>
+    <script th:src="@{/js/bootstrap.js}" src="js/bootstrap.js"></script>
+    <script th:src="@{/js/script.js}" src="js/script.js"></script>
+</head>
+<body>
+<h1 th:inline="text">Hello admin: [[${#httpServletRequest.remoteUser}]]!</h1>
+<form th:action="@{/editUser}" method="post">
+    <input type="submit" value="Редагувати"/>
+</form>
+<form th:action="@{admin/cards}" method="get">
+    <input type="submit" value="Карты"/>
+</form>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Вийти"/>
+</form>
+</body>
+</html>
