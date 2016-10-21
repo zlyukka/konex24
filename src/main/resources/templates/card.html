@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <title>User's type</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" type="text/css" href="css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{/css/common.css}" type="text/css" href="css/common.css" rel="stylesheet" />
+
+    <script th:src="@{/js/html5shiv.min.js}" src="js/html5shiv.min.js"></script>
+    <script th:src="@{/js/respond.min.js}" src="js/respond.min.js"></script>
+
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a style="padding-top: 0px;" class="navbar-brand" href="http://www.konex.com.ua">
+                    <!--<a class="header-logo" href="http://www.konex.com.ua">-->
+                    <img style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;" class="navbar-brand" src="http://www.konex.com.ua/wp-content/themes/konex/images/header-logo.png"/>
+                </a>
+
+
+
+                <!--<form role="search" class="navbar-form navbar-left">
+                    <input class="form-group" type="text"/>
+                    <input class="form-group" type="submit" value="Пошук"/>
+                </form>-->
+
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
+                    <span class="sr-only">Открыт навигацию</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+            <div class="collapse navbar-collapse" id="responsive-menu">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Про нас<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Путкт 1.1</a></li>
+                            <li><a href="#">Путкт 1.2</a></li>
+                            <li><a href="#">Путкт 1.3</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Путкт 1.4</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Види діяльності<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Путкт 2.1</a></li>
+                            <li><a href="#">Путкт 2.2</a></li>
+                            <li><a href="#">Путкт 2.3</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Путкт 2.4</a></li>
+                        </ul>
+                    </li>
+                    <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}" href="/admin">Адмін</a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                    <a href="/hello">
+                        <img th:src="@{/images/playrix-dragon.png}" style="margin-right: 15px; padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;" src="images/playrix-dragon.png" class="navbar-brand avatar img-circle" alt="avatar"/>
+                    </a>
+                    <li class="dropdown row">
+                        <a  href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <b th:inline="text"> [[${#httpServletRequest.remoteUser}]] </b>
+
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li ><input type="button" class="btn btn-link" value="Мої дані"/></li>
+                            <li><input form="editUser" type="submit" class="btn btn-link" value="Редагувати"/></li>
+                            <li class="divider"></li>
+                            <li><input form="logout" type="submit" class="btn btn-link" value="Вийти"/></li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <form id="hello" th:action="@{/hello}" method="get">
+    </form>
+
+    <form id="logout" th:action="@{/logout}" method="post">
+    </form>
+
+    <form id="editUser" th:action="@{/editCard}" method="post">
+    </form>
+
+    <div class="container">
+        <th:if test="!${#lists.isEmpty(userTypeList)}">
+            <table class="table table-striped table-bordered">
+                <caption><h2 class="form-heading" style="color: #337AB7">Карти</h2></caption>
+                <tr>
+                    <th>ID</th>
+
+                    <th>КАРТА</th>
+
+                    <th>КОРИСТУВАЧ</th>
+
+                    <th>РЕДАГУВАТИ</th>
+                    <th>ВИДАЛИТИ</th>
+                </tr>
+                <tr th:each="card : ${cardList}">
+                    <td th:text="${card.id}">0</td>
+
+                    <td th:text="${card.name}">None</td>
+
+                    <td th:text="${card.user?.username}"></td>
+                    <!--<td th:if="${card.user} == null"></td>-->
+
+                    <td><a th:href="@{/cardEdit/{id}(id=${card.id})}">РЕДАГУВАТИ</a></td>
+                    <td><a th:href="@{/cardDelete/{id}(id=${card.id})}">ВИДАЛИТИ</a></td>
+                </tr>
+            </table>
+        </th:if>
+    </div>
+
+
+    <div class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <!--<p th:if="${param.error[0]}" th:inline="text" class="alert alert-error" style="color: #FF0000">[[${param.error[0]}]]</p>-->
+            <p style="color: red" th:text="${param.error[0]}" th:unless="${param.error == null}">Test</p>
+            <div>
+                <h3 style="color: #2b669a">
+                    <span th:text="( (${card} != null)? 'Редагувати' : 'Додати') + ' тип Карти'"/>
+                    <br/>
+                </h3>
+            </div>
+
+            <form class="form-horizontal" th:action="@{/card/add}" action="/card/add" method="post">
+                <table>
+                    <div th:if="${card} != null">
+                        <tr>
+
+                            <td style="padding-right: 5px"><label class="control-label">ID</label></td>
+                            <td>
+                                <input class="form-control" type="text" th:value="${card?.id}" name="id" readonly="true"/>
+                            </td>
+                        </tr>
+                    </div>
+                    <tr>
+                        <td><label style="padding-right: 5px" class="control-label">Назва Карти</label></td>
+                        <td>
+                            <input  class="form-control" type="text" th:value="${card?.name}" name="name"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label style="padding-right: 5px" class="control-label">Номер картки</label></td>
+                        <td>
+                            <input  class="form-control" type="text" th:value="${card?.cardNom}" name="cardNom"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label style="padding-right: 5px" class="control-label">Дата активации</label></td>
+                        <td>
+                            <input  class="form-control" type="text" th:value="${card?.activate}" name="activateDate"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label style="padding-right: 5px" class="control-label">Дата деактивации</label></td>
+                        <td>
+                            <input  class="form-control" type="text" th:value="${card?.deactivate}" name="deactivateDate"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label style="padding-right: 5px" class="control-label">Тип картки</label></td>
+                        <td>
+                            <select type="text" name="cardType">
+                                <!--<option th:selected="${card.getCardType().getId()}==${cType.getId()} ? 'true' : 'false'" th:each="cType : ${cardsTypeList}" th:value="${cType.getId()}" th:text="${cType.getName()}" ></option>-->
+                                <option th:each="cType : ${cardsTypeList}" th:value="${cType.getId()}" th:text="${cType.getName()}" ></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <!--<tr>-->
+                        <!--<td><label style="padding-right: 5px" class="control-label">Номер телефона користувача</label></td>-->
+                        <!--<td>-->
+                            <!--&lt;!&ndash;<input  class="form-control" type="text" th:value="${card?.user.mobile}" name="tel"/>&ndash;&gt;-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <tr>
+                        <td><br/></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div th:if="${card} != null">
+                                <button class="btn btn-primary" type="submit">Редагувати</button>
+                                <button class="btn btn-default" form="return" type="submit">Відмінити</button>
+                            </div>
+
+                            <p></p>
+
+                            <div th:if="${card} == null">
+                                <button class="btn btn-primary" type="submit">Додати</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <p></p>
+
+            <form class="form-horizontal" th:action="@{/logout}" method="post">
+                <input class="btn btn-default" type="submit" value="Вийти"/>
+            </form>
+
+            <form class="form-horizontal" id="return" th:action="@{/cards}" method="get">
+            </form>
+        </div>
+        <p><br/></p>
+    </div>
+
+<script th:src="@{/js/jquery-3.1.0.min.js}" src="js/jquery-3.1.0.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}" src="js/script.js"></script>
+
+</body>
+</html>
