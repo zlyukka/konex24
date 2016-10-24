@@ -23,39 +23,18 @@
                 <tr>
                     <th>ID</th>
 
-                    <th>КАРТА</th>
-
-                    <th>НОМЕР</th>
-
-                    <th>ТИП</th>
-
-                    <th>АКТИВОВАНО</th>
-
-                    <th>ДЕАКТИВОВАНО</th>
-
-                    <th>КОРИСТУВАЧ</th>
+                    <th>ИМЯ</th>
 
                     <th>РЕДАГУВАТИ</th>
                     <th>ВИДАЛИТИ</th>
                 </tr>
-                <tr th:each="card : ${cardList}">
-                    <td th:text="${card.id}">0</td>
+                <tr th:each="cardType : ${cardTypeList}">
+                    <td th:text="${cardType.id}">0</td>
 
-                    <td th:text="${card.name}">None</td>
+                    <td th:text="${cardType.name}">None</td>
 
-                    <td th:text="${card.cardNom}">Nom</td>
-
-                    <td th:text="${card.cardType.name}">Type</td>
-
-                    <td th:text="${card.activate}">Activate</td>
-
-                    <td th:text="${card.deactivate}">Activate</td>
-
-                    <td th:text="${card.user?.username}"></td>
-                    <!--<td th:if="${card.user} == null"></td>-->
-
-                    <td><a th:href="@{/cardEdit/{id}(id=${card.id})}">РЕДАГУВАТИ</a></td>
-                    <td><a th:href="@{/cardDelete/{id}(id=${card.id})}">ВИДАЛИТИ</a></td>
+                    <td><a th:href="@{/admin/cardTypeEdit/{id}(id=${cardType.id})}">РЕДАГУВАТИ</a></td>
+                    <td><a th:href="@{/admin/cardTypeDelete/{id}(id=${cardType.id})}">ВИДАЛИТИ</a></td>
                 </tr>
             </table>
         </th:if>
@@ -68,58 +47,26 @@
             <p style="color: red" th:text="${param.error[0]}" th:unless="${param.error == null}">Test</p>
             <div>
                 <h3 style="color: #2b669a">
-                    <span th:text="( (${card} != null)? 'Редагувати' : 'Додати') + ' тип Карти'"/>
+                    <span th:text="( (${cardType} != null)? 'Редагувати' : 'Додати') + ' тип Карти'"/>
                     <br/>
                 </h3>
             </div>
 
-            <form class="form-horizontal" th:action="@{/card/add}" action="/card/add" method="post">
+            <form class="form-horizontal" th:action="@{/admin/cardType/add}" method="post">
                 <table>
-                    <div th:if="${card} != null">
+                    <div th:if="${cardType} != null">
                         <tr>
 
                             <td style="padding-right: 5px"><label class="control-label">ID</label></td>
                             <td>
-                                <input class="form-control" type="text" th:value="${card?.id}" name="id" readonly="true"/>
+                                <input class="form-control" type="text" th:value="${cardType?.id}" name="id" readonly="true"/>
                             </td>
                         </tr>
                     </div>
                     <tr>
                         <td><label style="padding-right: 5px" class="control-label">Назва Карти</label></td>
                         <td>
-                            <input  class="form-control" type="text" th:value="${card?.name}" name="name"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label style="padding-right: 5px" class="control-label">Номер картки</label></td>
-                        <td>
-                            <input  class="form-control" type="text" th:value="${card?.cardNom}" name="cardNom"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label style="padding-right: 5px" class="control-label">Дата активации</label></td>
-                        <td>
-                            <input  class="form-control" type="text" th:value="${card?.activate}" name="activateDate"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label style="padding-right: 5px" class="control-label">Дата деактивации</label></td>
-                        <td>
-                            <input  class="form-control" type="text" th:value="${card?.deactivate}" name="deactivateDate"/>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td><label style="padding-right: 5px" class="control-label">Тип картки</label></td>
-                        <td >
-                            <select type="text" name="cardType">
-                                <div th:if="${card}!=null">
-                                    <option th:selected="${card.getCardType().getId()}==${cType.getId()} ? 'true' : 'false'" th:each="cType : ${cardsTypeList}" th:value="${cType.getId()}" th:text="${cType.getName()}" ></option>
-                                </div>
-                                <div th:if="${card}==null">
-                                    <option th:each="cType : ${cardsTypeList}" th:value="${cType.getId()}" th:text="${cType.getName()}" ></option>
-                                </div>
-                            </select>
+                            <input  class="form-control" type="text" th:value="${cardType?.name}" name="name"/>
                         </td>
                     </tr>
                     <!--<tr>-->
@@ -134,12 +81,12 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <div th:if="${card} != null">
+                            <div th:if="${cardType} != null">
                                 <button class="btn btn-primary" type="submit">Редагувати</button>
                                 <button class="btn btn-default" form="return" type="submit">Відмінити</button>
                             </div>
                             <p></p>
-                            <div th:if="${card} == null">
+                            <div th:if="${cardType} == null">
                                 <button class="btn btn-primary" type="submit">Додати</button>
                             </div>
                         </td>
@@ -153,7 +100,7 @@
                 <input class="btn btn-default" type="submit" value="Вийти"/>
             </form>
 
-            <form class="form-horizontal" id="return" th:action="@{/cards}" method="get">
+            <form class="form-horizontal" id="return" th:action="@{/admin/cardsType}" method="get">
             </form>
         </div>
         <p><br/></p>

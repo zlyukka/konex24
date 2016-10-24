@@ -36,7 +36,7 @@ public class CardTypeServicesImpl implements CardTypeServices{
 
     @Override
     public void deleteCardType(Long id) {
-
+        cardTypeDao.delete(id);
     }
 
     @Override

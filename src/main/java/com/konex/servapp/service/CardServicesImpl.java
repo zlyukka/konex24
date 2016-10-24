@@ -30,19 +30,8 @@ public class CardServicesImpl implements CardServices {
     }
 
     @Override
-    public void editCard(Card curCard, Principal currentUser) {
-        User user=userService.findByUsername(currentUser.getName());
-        if (user.getAuthorities().toString().contains("ROLE_ADMIN")){
-            cardDao.saveAndFlush(curCard);
-            return;
-        }
-        for(Card card : getCardsByUser(user)){
-            if (card.getId()==curCard.getId()){
-                curCard.setUser(user);
-                cardDao.saveAndFlush(curCard);
-                System.out.println("Отредактирована карта номер "+curCard+" для пользователя "+currentUser.getName());
-            }
-        }
+    public void editCard(Card curCard) {
+        cardDao.saveAndFlush(curCard);
     }
 
     @Override
