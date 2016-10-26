@@ -99,13 +99,13 @@
                     <tr>
                         <td><label style="padding-right: 5px" class="control-label">Дата активации</label></td>
                         <td>
-                            <input  class="form-control" type="text" th:value="${card?.activate}" name="activateDate"/>
+                            <input  class="form-control" type="text" th:value="${card?.activate}!=null?${#calendars.format(card.activate, 'yyyy-MM-dd')}:''" name="activateDate"/>
                         </td>
                     </tr>
                     <tr>
                         <td><label style="padding-right: 5px" class="control-label">Дата деактивации</label></td>
                         <td>
-                            <input  class="form-control" type="text" th:value="${card?.deactivate}" name="deactivateDate"/>
+                            <input  class="form-control" type="text" th:value="${card?.deactivate}!=null?${#calendars.format(card.deactivate, 'yyyy-MM-dd')}:''" name="deactivateDate"/>
                         </td>
                     </tr>
 
@@ -114,7 +114,7 @@
                         <td >
                             <select type="text" name="cardType">
                                 <div th:if="${card}!=null">
-                                    <option th:selected="${card.getCardType().getId()}==${cType.getId()} ? 'true' : 'false'" th:each="cType : ${cardsTypeList}" th:value="${cType.getId()}" th:text="${cType.getName()}" ></option>
+                                    <option th:selected="${card.getCardType().getId()}==${cType.getId()} ? 'true' : 'false'" th:each="cType : ${cardsTypeList}" th:value="${cType.getId()}" th:text="${cType.getName()}"></option>
                                 </div>
                                 <div th:if="${card}==null">
                                     <option th:each="cType : ${cardsTypeList}" th:value="${cType.getId()}" th:text="${cType.getName()}" ></option>

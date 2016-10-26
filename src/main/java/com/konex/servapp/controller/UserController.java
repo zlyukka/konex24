@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.konex.servapp.entity.Card;
 import com.konex.servapp.entity.CardType;
 import com.konex.servapp.entity.User;
+import com.konex.servapp.entity.reference.Good;
 import com.konex.servapp.service.*;
+import com.konex.servapp.service.Good.GoodServicea;
 import com.konex.servapp.validator.UserValidator;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ import java.util.Map;
  */
 @Controller
 public class UserController {
+    @Autowired
+    private GoodServicea goodServicea;
 
     @Autowired
     private CardTypeServices cardTypeServices;
@@ -47,6 +51,7 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
 
+    private Card cardError;
     //@Autowired
     //private AccessDecisionManager accessDecisionManager;
 
@@ -179,29 +184,42 @@ public class UserController {
         if (uId == null){ uId = (userService.findByUsername(currentUser.getName())).getId(); }
 //        if (uId == null){ uId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId(); }
 
-        if (request.getHeader("referer").contains("/editUser")){
+        if (request.getHeader("referer").contains("/editUser")) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            try{
+            try {
+                System.out.println("До");
                 Date date = dateFormat.parse(birthday);
+                System.out.println("После");
                 edUser.setBirthday(date);
-            }catch(ParseException e) {
+                userService.editUser(uId, edUser);
+                return "redirect:" + ref.substring(ref.lastIndexOf('/'));
+            } catch (ParseException e) {
                 e.printStackTrace();
+                userService.editUser(uId, edUser);
+                return "redirect:" + ref.substring(ref.lastIndexOf('/'));
+            } catch (NullPointerException e){
+                //e.printStackTrace();
+                System.out.println("Нехуй тікать два раза редактировать");
             }
-
-            userService.editUser(uId, edUser);
-
-            return "redirect:"+ref.substring(ref.lastIndexOf('/'));
         }
 
         User user = userService.findById(uId);
         model.addAttribute("user", user);
-        model.addAttribute("ref", request.getHeader("referer"));
+        if(!request.getHeader("referer").contains("editUser")) {
+            model.addAttribute("ref", request.getHeader("referer"));
+        }else{
+            model.addAttribute("ref","/");
+        }
         return "editUser";
     }
 
     //** Управление картами шаблон
     @RequestMapping(value = "/cards", method = RequestMethod.GET)
     public String getUserCard(Model model, Map<String, Object> map, Principal currentUser) {
+        if (cardError!=null) {
+            map.put("card", cardError);
+            cardError=null;
+        }
         map.put("cardList", cardServices.getCardsByUser(userService.findByUsername(currentUser.getName())));
         map.put("cardsTypeList",cardTypeServices.getCardType());
         System.out.println("=============> CARDS GET");
@@ -234,14 +252,22 @@ public class UserController {
                 cardServices.addCard(card);
             } catch (org.springframework.dao.DataIntegrityViolationException e) {
                 System.err.println("==== ERROR =====> addCard: " + e);
-//                model.addAttribute("error", "Invalid user's type.");
+                cardError=card;
+                model.addAttribute("error", "Invalid user's type.");
                 return "redirect:/cards?error=ERROR! Invalid card's (Check if current cards num is not duplicated)";
             }
         } else {
             User user=userService.findByUsername(currentUser.getName());
             if(cardServices.getCardById(card.getId()).getUser().getId()==user.getId()){
                 card.setUser(user);
-                cardServices.editCard(card);
+                try {
+                    cardServices.editCard(card);
+                }catch (org.springframework.dao.DataIntegrityViolationException e) {
+                    System.err.println("==== ERROR =====> addCard: " + e);
+                    cardError=card;
+                    model.addAttribute("error", "Invalid user's type.");
+                    return "redirect:/cards?error=ERROR! Invalid card's (Check if current cards num is not duplicated)";
+                }
                 System.out.println("======> editCard");
             }else{
                 System.out.println("======> Can not edit");
@@ -290,7 +316,11 @@ public class UserController {
 
     //**Карты админа
     @RequestMapping(value = "/admin/cards", method = RequestMethod.GET)
-    public String admiCard(Model model, Map<String, Object> map, Principal currentUser) {
+    public String adminCard(Model model, Map<String, Object> map, Principal currentUser) {
+        if (cardError!=null) {
+            map.put("card", cardError);
+            cardError=null;
+        }
         map.put("cardList", cardServices.getCards());
         map.put("cardsTypeList",cardTypeServices.getCardType());
         System.out.println("=============> CARDS GET");
@@ -323,6 +353,7 @@ public class UserController {
                 cardServices.addCard(card);
             } catch (org.springframework.dao.DataIntegrityViolationException e) {
                 System.err.println("==== ERROR =====> addCard: " + e);
+                cardError=card;
 //              model.addAttribute("error", "Invalid user's type.");
                 return "redirect:/admin/cards?error=ERROR! Invalid card's (Check if current cards num is not duplicated)";
             }
@@ -422,6 +453,14 @@ public class UserController {
             return "redirect:/admin/cardsType?error=ERROR! Invalid card'Type's (There are cards relating to this type of)";
         }
         return "redirect:/admin/cardsType";
+    }
+    @RequestMapping(value = "/good/{good.name}", method = RequestMethod.GET)
+    public String getGoodByPartName(@PathVariable("good.name") String goodName, Model model){
+        System.out.println(" Товар имя которого начинается на "+goodName);
+       for(Good good : goodServicea.getGoodByPartName(goodName)){
+            System.out.println(good+" ATS="+good.getAts());
+        }
+        return "redirect:/";
     }
 }
 

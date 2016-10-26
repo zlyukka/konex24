@@ -13,7 +13,7 @@
 
 </head>
 <body>
-<div th:replace="static/static :: header"></div>
+<div th:replace="static/static :: header" name="header" id="head"></div>
 
 
     <div class="container">
@@ -75,7 +75,7 @@
 
             <form class="form-horizontal" th:action="@{/admin/card/add}" action="admin/card/add" method="post">
                 <table>
-                    <div th:if="${card} != null">
+                    <div th:if="${card?.id} != null">
                         <tr>
                             <td style="padding-right: 5px"><label class="control-label">ID</label></td>
                             <td>
@@ -108,13 +108,13 @@
                     <tr>
                         <td><label style="padding-right: 5px" class="control-label">Дата активации</label></td>
                         <td>
-                            <input  class="form-control" type="text" th:value="${card?.activate}" name="activateDate"/>
+                            <input  class="form-control" type="text" th:value="${card?.activate}!=null?${#calendars.format(card.activate, 'yyyy-MM-dd')}:''" name="activateDate"/>
                         </td>
                     </tr>
                     <tr>
                         <td><label style="padding-right: 5px" class="control-label">Дата деактивации</label></td>
                         <td>
-                            <input  class="form-control" type="text" th:value="${card?.deactivate}" name="deactivateDate"/>
+                            <input  class="form-control" type="text" th:value="${card?.deactivate}!=null?${#calendars.format(card.deactivate, 'yyyy-MM-dd')}:''" name="deactivateDate"/>
                         </td>
                     </tr>
 
@@ -137,14 +137,14 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <div th:if="${card} != null">
+                            <div th:if="${card?.id} != null">
                                 <button class="btn btn-primary" type="submit">Редагувати</button>
                                 <button class="btn btn-default" form="return" type="submit">Відмінити</button>
                             </div>
 
                             <p></p>
 
-                            <div th:if="${card} == null">
+                            <div th:if="${card?.id} == null">
                                 <button class="btn btn-primary" type="submit">Додати</button>
                             </div>
                         </td>

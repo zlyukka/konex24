@@ -1,4 +1,4 @@
-    <div th:fragment="header">
+    <div th:fragment="header" name="header">
         <link th:href="@{/css/bootstrap.min.css}" type="text/css" href="css/bootstrap.min.css" rel="stylesheet" />
         <link th:href="@{/css/common.css}" type="text/css" href="css/common.css" rel="stylesheet" />
 
@@ -64,8 +64,8 @@
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li ><input type="button" class="btn btn-link" value="Мої дані"/></li>
-                                <li><input form="editUser" type="submit" class="btn btn-link" value="Редагувати"/></li>
+                                <li><a th:href="@{/hello}" href="/hello">Мої дані</a></li>
+                                <li><input id="editProfile" form="editUser" type="submit" class="btn btn-link" value="Редагувати"/></li>
                                 <li class="divider"></li>
                                 <li><input form="logout" type="submit" class="btn btn-link" value="Вийти"/></li>
                             </ul>
@@ -82,7 +82,7 @@
         <form id="logout" th:action="@{/logout}" method="post">
         </form>
 
-        <form id="editUser" th:action="@{/editCard}" method="post">
+        <form id="editUser" th:action="@{/editUser}" method="post">
         </form>
     </div>
 
