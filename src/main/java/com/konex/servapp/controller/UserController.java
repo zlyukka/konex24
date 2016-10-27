@@ -1,16 +1,16 @@
 package com.konex.servapp.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.konex.servapp.entity.Card;
 import com.konex.servapp.entity.CardType;
 import com.konex.servapp.entity.User;
-import com.konex.servapp.entity.reference.Good;
+import com.konex.servapp.entity.reference.Goods;
+import com.konex.servapp.entity.reference.GoodsRemnants;
 import com.konex.servapp.service.*;
-import com.konex.servapp.service.Good.GoodServicea;
+import com.konex.servapp.service.reference.GoodsRemnantsServices;
+import com.konex.servapp.service.reference.GoodsServicea;
 import com.konex.servapp.validator.UserValidator;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,8 +33,12 @@ import java.util.Map;
  */
 @Controller
 public class UserController {
+
     @Autowired
-    private GoodServicea goodServicea;
+    private GoodsRemnantsServices goodsRemnantsServices;
+
+    @Autowired
+    private GoodsServicea goodsServicea;
 
     @Autowired
     private CardTypeServices cardTypeServices;
@@ -454,11 +458,11 @@ public class UserController {
         }
         return "redirect:/admin/cardsType";
     }
-    @RequestMapping(value = "/good/{good.name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/goods/{good.name}", method = RequestMethod.GET)
     public String getGoodByPartName(@PathVariable("good.name") String goodName, Model model){
         System.out.println(" Товар имя которого начинается на "+goodName);
-       for(Good good : goodServicea.getGoodByPartName(goodName)){
-            System.out.println(good+" ATS="+good.getAts());
+       for(GoodsRemnants goodsRemnants : goodsRemnantsServices.gatRemnantsByPartName(goodName)){
+            System.out.println("Товар-"+goodsRemnants.getGoods()+"  Аптека-"+goodsRemnants.getTradePoint()+" Колич-"+goodsRemnants.getCount());
         }
         return "redirect:/";
     }

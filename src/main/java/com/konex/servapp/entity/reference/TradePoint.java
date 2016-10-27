@@ -1,17 +1,17 @@
 package com.konex.servapp.entity.reference;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.konex.servapp.entity.DomainObject;
+
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by Виталий on 26.10.2016.
  */
 @Entity
 @Table(name="Trade_points")
-public class TradePoint {
+public class TradePoint implements DomainObject {
     @Id
     @Column(name = "trade_pnt_is")
     private Long id;
@@ -43,6 +43,10 @@ public class TradePoint {
     @Column(name="link")
     private String link;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tradePoint")
+    private Set<GoodsRemnants> Remenants;
+
+    ///--------------------------------------
     public TradePoint() {
     }
 

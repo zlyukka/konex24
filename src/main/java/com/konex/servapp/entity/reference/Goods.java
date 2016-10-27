@@ -1,16 +1,18 @@
 package com.konex.servapp.entity.reference;
 
+import com.konex.servapp.entity.DomainObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by Виталий on 26.10.2016.
  */
 @Entity
 @Table(name="Goods")
-public class Good {
+public class Goods implements DomainObject {
     @Id
     @Column(name = "goods_id")
     private Long id;
@@ -30,12 +32,15 @@ public class Good {
     @Column(name = "prescription")
     private Bool prescription;
 
-    public Good() {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "goods")
+    private Set<GoodsRemnants> Remenants;
+////---------------------------------------------------
+    public Goods() {
     }
 
     @Override
     public String toString() {
-        return "Good{" +
+        return "reference{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", manufactor='" + manufactor + '\'' +
@@ -49,13 +54,13 @@ public class Good {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Good good = (Good) o;
+        Goods goods = (Goods) o;
 
-        if (ats != good.ats) return false;
-        if (!id.equals(good.id)) return false;
-        if (!name.equals(good.name)) return false;
-        if (!manufactor.equals(good.manufactor)) return false;
-        return prescription != null ? prescription.equals(good.prescription) : good.prescription == null;
+        if (ats != goods.ats) return false;
+        if (!id.equals(goods.id)) return false;
+        if (!name.equals(goods.name)) return false;
+        if (!manufactor.equals(goods.manufactor)) return false;
+        return prescription != null ? prescription.equals(goods.prescription) : goods.prescription == null;
 
     }
 
