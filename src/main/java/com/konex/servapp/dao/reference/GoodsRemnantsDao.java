@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,15 @@ import java.util.List;
 public interface GoodsRemnantsDao extends JpaRepository<GoodsRemnants, GoodsRemnantsId> {
 
     @Query("select ost from GoodsRemnants ost " +
-            "LEFT JOIN ost.goods g LEFT JOIN ost.tradePoint pr where g.name like :#{#goodsName}+'%'")
-    List<GoodsRemnants> getOstByToch(@Param("goodsName") String tovName);
+            "LEFT JOIN ost.goods g " +
+            "LEFT JOIN ost.tradePoint tp " +
+            "where g.name like ?#{[0]}+'%' AND tp.id IN ?#{[1]}")
+    List<GoodsRemnants> getOstByToch(String tovName,
+                                      List tochDlyaOtbpra);
+
+    @Query("select ost from GoodsRemnants ost " +
+            "LEFT JOIN ost.goods g " +
+            "LEFT JOIN ost.tradePoint tp " +
+            "where g.name like ?1+'%'")
+    List<GoodsRemnants> getOstByToch(String tovName);
 }

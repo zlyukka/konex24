@@ -32,9 +32,9 @@ public class GoodsRemnants implements DomainObject {
     @Column(name="outcom_price")
     private float outPr;
 
-//    @Column(name="update_date")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date update;
+    @Column(name="update_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date update;
 
     @Column(name="NDS")
     private int nds;
@@ -52,42 +52,42 @@ public class GoodsRemnants implements DomainObject {
                 ", serial=" + serial +
                 ", incPr=" + incPr +
                 ", outPr=" + outPr +
-//                ", update=" + update +
+                ", update=" + update +
                 ", nds=" + nds +
                 ", count=" + count +
                 '}';
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        GoodsRemnants that = (GoodsRemnants) o;
-//
-//        if (serial != that.serial) return false;
-//        if (Float.compare(that.incPr, incPr) != 0) return false;
-//        if (Float.compare(that.outPr, outPr) != 0) return false;
-//        if (nds != that.nds) return false;
-//        if (count != that.count) return false;
-//        if (!goods.equals(that.goods)) return false;
-//        if (!tradePoint.equals(that.tradePoint)) return false;
-//        return update != null ? update.equals(that.update) : that.update == null;
-//
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-//    @Override
-//    public int hashCode() {
-//        int result = goods.hashCode();
-//        result = 31 * result + tradePoint.hashCode();
-//        result = 31 * result + serial;
-//        result = 31 * result + (incPr != +0.0f ? Float.floatToIntBits(incPr) : 0);
-//        result = 31 * result + (outPr != +0.0f ? Float.floatToIntBits(outPr) : 0);
-//        result = 31 * result + (update != null ? update.hashCode() : 0);
-//        result = 31 * result + nds;
-//        result = 31 * result + count;
-//        return result;
-//    }
+        GoodsRemnants that = (GoodsRemnants) o;
+
+        if (serial != that.serial) return false;
+        if (Float.compare(that.incPr, incPr) != 0) return false;
+        if (Float.compare(that.outPr, outPr) != 0) return false;
+        if (nds != that.nds) return false;
+        if (count != that.count) return false;
+        if (!goods.equals(that.goods)) return false;
+        if (!tradePoint.equals(that.tradePoint)) return false;
+        return update != null ? update.equals(that.update) : that.update == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = goods.hashCode();
+        result = 31 * result + tradePoint.hashCode();
+        result = 31 * result + serial;
+        result = 31 * result + (incPr != +0.0f ? Float.floatToIntBits(incPr) : 0);
+        result = 31 * result + (outPr != +0.0f ? Float.floatToIntBits(outPr) : 0);
+        result = 31 * result + (update != null ? update.hashCode() : 0);
+        result = 31 * result + nds;
+        result = 31 * result + count;
+        return result;
+    }
 
     public Goods getGoods() {
 
@@ -130,13 +130,13 @@ public class GoodsRemnants implements DomainObject {
         this.outPr = outPr;
     }
 
-//    public Date getUpdate() {
-//        return update;
-//    }
-//
-//    public void setUpdate(Date update) {
-//        this.update = update;
-//    }
+    public Date getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(Date update) {
+        this.update = update;
+    }
 
     public int getNds() {
         return nds;

@@ -5,6 +5,7 @@ import com.konex.servapp.entity.reference.GoodsRemnants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,13 @@ public class GoodsRemnantsServicesImpl implements  GoodsRemnantsServices {
     GoodsRemnantsDao goodsRemnantsDao;
 
     @Override
-    public List<GoodsRemnants> gatRemnantsByPartName(String name) {
-        return goodsRemnantsDao.getOstByToch(name);
+    public List<GoodsRemnants> gatRemnantsByPartName(String name, List tochOtbor){
+        //System.out.println(tochOtbor.get(0));
+        //System.out.println(tochOtbor.get(1));
+        if (tochOtbor==null){
+            return goodsRemnantsDao.getOstByToch(name);
+        }else{
+            return goodsRemnantsDao.getOstByToch(name, tochOtbor);
+        }
     }
 }

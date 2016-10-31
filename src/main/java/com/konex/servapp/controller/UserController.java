@@ -23,10 +23,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by kneimad on 28.09.2016.
@@ -461,7 +458,10 @@ public class UserController {
     @RequestMapping(value = "/goods/{good.name}", method = RequestMethod.GET)
     public String getGoodByPartName(@PathVariable("good.name") String goodName, Model model){
         System.out.println(" Товар имя которого начинается на "+goodName);
-       for(GoodsRemnants goodsRemnants : goodsRemnantsServices.gatRemnantsByPartName(goodName)){
+        List<Long> tochList=new ArrayList<Long>();
+        tochList.add(1L);
+        tochList.add(2L);
+       for(GoodsRemnants goodsRemnants : goodsRemnantsServices.gatRemnantsByPartName(goodName, tochList)){
             System.out.println("Товар-"+goodsRemnants.getGoods()+"  Аптека-"+goodsRemnants.getTradePoint()+" Колич-"+goodsRemnants.getCount());
         }
         return "redirect:/";
