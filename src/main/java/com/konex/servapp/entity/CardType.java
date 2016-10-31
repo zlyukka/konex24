@@ -17,6 +17,17 @@ public class CardType implements DomainObject {
     @Column(name = "card_type")
     private String name;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cardType")
+    private Set<Card> cardSet;
+
+    public Set<Card> getCardSet() {
+        return cardSet;
+    }
+
+    public void setCardSet(Set<Card> cardSet) {
+        this.cardSet = cardSet;
+    }
+
     public CardType() {
     }
 

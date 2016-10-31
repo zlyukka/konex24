@@ -6,6 +6,7 @@
     <title>Hello people!</title>
 </head>
 <body>
+<div th:replace="static/static :: header"></div>
 <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
 
 <!--<div sec:authorize="hasRole('ROLE_ADMIN')">-->
@@ -40,6 +41,10 @@
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Вийти"/>
 </form>
+<div th:replace="static/static :: footer"></div>
 
+<script th:src="@{/js/jquery-3.1.0.min.js}" src="js/jquery-3.1.0.min.js"></script>
+<script th:src="@{/js/bootstrap.min.js}" src="js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}" src="js/script.js"></script>
 </body>
 </html>

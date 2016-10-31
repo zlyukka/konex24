@@ -13,8 +13,11 @@
 <form th:action="@{/editUser}" method="post">
     <input type="submit" value="Редагувати"/>
 </form>
-<form th:action="@{admin/cards}" method="get">
+<form th:action="@{/admin/cards}" method="get">
     <input type="submit" value="Карты"/>
+</form>
+<form th:action="@{/admin/cardsType}" method="get">
+    <input type="submit" value="ТипыКарт"/>
 </form>
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Вийти"/>

@@ -3,11 +3,14 @@ package com.konex.servapp.controller;
 import com.konex.servapp.entity.Card;
 import com.konex.servapp.entity.CardType;
 import com.konex.servapp.entity.User;
+import com.konex.servapp.entity.reference.Goods;
+import com.konex.servapp.entity.reference.GoodsRemnants;
 import com.konex.servapp.service.*;
+import com.konex.servapp.service.reference.GoodsRemnantsServices;
+import com.konex.servapp.service.reference.GoodsServicea;
 import com.konex.servapp.validator.UserValidator;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,15 +23,19 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by kneimad on 28.09.2016.
  */
 @Controller
 public class UserController {
+
+    @Autowired
+    private GoodsRemnantsServices goodsRemnantsServices;
+
+    @Autowired
+    private GoodsServicea goodsServicea;
 
     @Autowired
     private CardTypeServices cardTypeServices;
@@ -45,6 +52,7 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
 
+    private Card cardError;
     //@Autowired
     //private AccessDecisionManager accessDecisionManager;
 
@@ -177,70 +185,42 @@ public class UserController {
         if (uId == null){ uId = (userService.findByUsername(currentUser.getName())).getId(); }
 //        if (uId == null){ uId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId(); }
 
-        if (request.getHeader("referer").contains("/editUser")){
+        if (request.getHeader("referer").contains("/editUser")) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            try{
+            try {
+                System.out.println("До");
                 Date date = dateFormat.parse(birthday);
+                System.out.println("После");
                 edUser.setBirthday(date);
-            }catch(ParseException e) {
+                userService.editUser(uId, edUser);
+                return "redirect:" + ref.substring(ref.lastIndexOf('/'));
+            } catch (ParseException e) {
                 e.printStackTrace();
+                userService.editUser(uId, edUser);
+                return "redirect:" + ref.substring(ref.lastIndexOf('/'));
+            } catch (NullPointerException e){
+                //e.printStackTrace();
+                System.out.println("Нехуй тікать два раза редактировать");
             }
-
-            userService.editUser(uId, edUser);
-
-            return "redirect:"+ref.substring(ref.lastIndexOf('/'));
         }
 
         User user = userService.findById(uId);
         model.addAttribute("user", user);
-        model.addAttribute("ref", request.getHeader("referer"));
+        if(!request.getHeader("referer").contains("editUser")) {
+            model.addAttribute("ref", request.getHeader("referer"));
+        }else{
+            model.addAttribute("ref","/");
+        }
         return "editUser";
     }
-
-    //** Управление типами карт
-    @RequestMapping(value = "/getCardsType", method = RequestMethod.GET)
-    public String getCardsType(Model model, Principal currentUser){
-        System.out.println("===================getCardType");
-        model.addAttribute("cardsType",cardTypeServices.getCardType());
-        return "cardsType";
-    }
-
-
-    @RequestMapping(value = "/addCardType", method = RequestMethod.GET)
-    public String addCardType(Model model){
-        System.out.println("===================Start cardType add");
-        return "addCardType";
-    }
-
-    @RequestMapping(value = "/addCardType", method = RequestMethod.POST)
-    public String addCardType(@ModelAttribute("cardForm") CardType cardType,
-                         Model model, Principal currentUser){
-        System.out.println(cardType);
-        cardTypeServices.addCardType(cardType);
-        return "redirect:/getCardsType";
-    }
-
-    @RequestMapping(value = "/cardsTypeEdit/{cardType_id}", method = RequestMethod.GET)
-    public String cardTypeEdit(@PathVariable("cardType_id") Long id,
-                              Model model){
-        System.out.println("===================Start cardType edit");
-        System.out.println("id="+id);
-        model.addAttribute("cardType", cardTypeServices.getCardTypeById(id));
-        return "cardsTypeEdit";
-    }
-
-    @RequestMapping(value = "/cardsTypeEdit", method = RequestMethod.POST)
-    public String cardTypeEditSave(@ModelAttribute("cardTypeForm") CardType cardType,
-                               Model model){
-        System.out.println("===================Start cardType editSave");
-        cardTypeServices.editCardType(cardType);
-        return "redirect:/getCardsType";
-    }
-
 
     //** Управление картами шаблон
     @RequestMapping(value = "/cards", method = RequestMethod.GET)
     public String getUserCard(Model model, Map<String, Object> map, Principal currentUser) {
+        if (cardError!=null) {
+            map.put("card", cardError);
+            cardError=null;
+        }
         map.put("cardList", cardServices.getCardsByUser(userService.findByUsername(currentUser.getName())));
         map.put("cardsTypeList",cardTypeServices.getCardType());
         System.out.println("=============> CARDS GET");
@@ -248,7 +228,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/card/add", method = RequestMethod.POST)
-    public String addUserType(@ModelAttribute("card") Card card,
+    public String addCard(@ModelAttribute("card") Card card,
                               @RequestParam(value = "deactivateDate", required = false) String deactivate,
                               @RequestParam(value = "activateDate", required = false) String activate,
                               String error, Model model, Principal currentUser){
@@ -273,12 +253,22 @@ public class UserController {
                 cardServices.addCard(card);
             } catch (org.springframework.dao.DataIntegrityViolationException e) {
                 System.err.println("==== ERROR =====> addCard: " + e);
-//                model.addAttribute("error", "Invalid user's type.");
+                cardError=card;
+                model.addAttribute("error", "Invalid user's type.");
                 return "redirect:/cards?error=ERROR! Invalid card's (Check if current cards num is not duplicated)";
             }
         } else {
             User user=userService.findByUsername(currentUser.getName());
             if(cardServices.getCardById(card.getId()).getUser().getId()==user.getId()){
+                card.setUser(user);
+                try {
+                    cardServices.editCard(card);
+                }catch (org.springframework.dao.DataIntegrityViolationException e) {
+                    System.err.println("==== ERROR =====> addCard: " + e);
+                    cardError=card;
+                    model.addAttribute("error", "Invalid user's type.");
+                    return "redirect:/cards?error=ERROR! Invalid card's (Check if current cards num is not duplicated)";
+                }
                 System.out.println("======> editCard");
             }else{
                 System.out.println("======> Can not edit");
@@ -291,7 +281,7 @@ public class UserController {
     }
 
     @RequestMapping("cardEdit/{card.id}")
-    public String editUserType(@PathVariable("card.id") Long id, Model model, Principal currentUser){
+    public String editCard(@PathVariable("card.id") Long id, Model model, Principal currentUser){
         User user=userService.findByUsername(currentUser.getName());
         if(cardServices.getCardById(id).getUser().equals(user)){
             System.out.println("======> editCard");
@@ -327,100 +317,155 @@ public class UserController {
 
     //**Карты админа
     @RequestMapping(value = "/admin/cards", method = RequestMethod.GET)
-    public String adminUserCard(Model model, Map<String, Object> map, Principal currentUser) {
+    public String adminCard(Model model, Map<String, Object> map, Principal currentUser) {
+        if (cardError!=null) {
+            map.put("card", cardError);
+            cardError=null;
+        }
         map.put("cardList", cardServices.getCards());
         map.put("cardsTypeList",cardTypeServices.getCardType());
         System.out.println("=============> CARDS GET");
-        return "card";
+        return "adminCard";
+    }
+
+    @RequestMapping(value = "/admin/card/add", method = RequestMethod.POST)
+    public String adminAddCard(@ModelAttribute("card") Card card,
+                              @RequestParam(value = "deactivateDate", required = false) String deactivate,
+                              @RequestParam(value = "activateDate", required = false) String activate,
+                              @RequestParam(value = "userId", required = false) Long userId,
+                              String error, Model model, Principal currentUser){
+        System.out.println("card: " + card.toString());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try{
+            if(deactivate.length()>6) {
+                Date date = dateFormat.parse(deactivate);
+                card.setDeactivate(date);
+            }
+            if(activate.length()>6) {
+                Date date = dateFormat.parse(activate);
+                card.setActivate(date);
+            }
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+        if (card.getId() == null) {
+            System.out.println("======> addCard");
+            try {
+                cardServices.addCard(card);
+            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                System.err.println("==== ERROR =====> addCard: " + e);
+                cardError=card;
+//              model.addAttribute("error", "Invalid user's type.");
+                return "redirect:/admin/cards?error=ERROR! Invalid card's (Check if current cards num is not duplicated)";
+            }
+        } else {
+            if(userId!=null) {
+                //System.out.println(userId);
+                card.setUser(userService.findById(userId));
+            }
+            cardServices.editCard(card);
+            System.out.println("======> editCard");
+        }
+        return "redirect:/admin/cards";
+    }
+
+    @RequestMapping("admin/cardEdit/{card.id}")
+    public String adminEditCard(@PathVariable("card.id") Long id, Model model, Principal currentUser){
+        User user=userService.findByUsername(currentUser.getName());
+        System.out.println("======> editCard");
+        model.addAttribute("card", cardServices.getCardById(id));
+        model.addAttribute("cardList", cardServices.getCards());
+        model.addAttribute("cardsTypeList", cardTypeServices.getCardType());
+        System.out.println("=============> EDIT CARD");
+        return "adminCard";
+    }
+
+    @RequestMapping(value = "/admin/cardDelete/{card.id}", method = RequestMethod.GET)
+    public String adminCardDelete(@PathVariable("card.id") Long id,
+                             Model model, Principal currentUser){
+        System.out.println("======> delete");
+        try{
+            cardServices.deleteCard(id);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            System.err.println("==== ERROR =====> deleteUserType: " + e);
+            return "redirect:admin/cards?error=ERROR! Current card is us";
+        }
+
+
+        return "redirect:/admin/cards";
     }
 
 
+    @RequestMapping(value = "/admin/getUserByTel", method = RequestMethod.POST)
+    @ResponseBody
+    public Map getUserByTel(@RequestParam("tel") String tel) {
+        User user=userService.finUserByMobile(tel);
+        System.out.println(user);
+        Map us=new HashMap();
+        us.put("tel",user.getMobile());
+        us.put("fio",user.getUserPIB());
+        us.put("id",user.getId());
+        return us;
+    }
 
-    //** Управление картами
-//    @RequestMapping(value = "/myCards", method = RequestMethod.GET)
-//    public String getMyCards(Model model, Principal currentUser){
-//        System.out.println("===================My cards");
-//        User user=userService.findByUsername(currentUser.getName());
-//        model.addAttribute("cards", cardServices.getCardsByUser(userService.findByUsername(currentUser.getName())));
-//        return "myCards";
-//    }
-//
-//    @RequestMapping(value = "/adminCards", method = RequestMethod.GET)
-//    public String getCards(Model model, Principal currentUser){
-//        System.out.println("===================My cards");
-//        User user=userService.findByUsername(currentUser.getName());
-//        model.addAttribute("cardList", cardServices.getCards());
-//        return "myCards";
-//    }
-//
-//    @RequestMapping(value = "/addCard", method = RequestMethod.GET)
-//    public String addCad(Model model,HttpServletRequest request){
-//        System.out.println("===================Finish card add "+request.getHeader("referer"));
-//        model.addAttribute("cardsType",cardTypeServices.getCardType());
-//        model.addAttribute("ref",request.getHeader("referer"));
-//        return "addCard";
-//    }
-//
-//    @RequestMapping(value = "/addCard", method = RequestMethod.POST)
-//    public String addCad(@ModelAttribute("cardForm") Card myCard,
-//                         @RequestParam(value = "referer", required = false) String ref,
-//                         Model model, Principal currentUser){
-//        myCard.setUser(userService.findByUsername(currentUser.getName()));
-//        System.out.println(myCard);
-//        cardServices.addCard(myCard);
-//        if (ref.contains("/adminCards")){
-//            return "redirect:/adminCards";
-//        }
-//        return "redirect:/myCards";
-//    }
-//
-//    @RequestMapping(value = "/cardEdit/{card.id}", method = RequestMethod.GET)
-//    public String cardEdit(@PathVariable("card.id") Long id,
-//                           Model model, HttpServletRequest request){
-//        System.out.println("===================Start card edit ");
-//        model.addAttribute("card",cardServices.getCardById(id));
-//        model.addAttribute("ref",request.getHeader("referer"));
-//        model.addAttribute("cardsType",cardTypeServices.getCardType());
-//        return "cardEdit";
-//    }
-//
-//    @RequestMapping(value = "/cardEdit", method = RequestMethod.POST)
-//    public String cardEdit(@ModelAttribute("cardForm") Card myCard,
-//                           @RequestParam(value = "referer", required = false) String ref,
-//                           @RequestParam(value = "deactivateDate", required = false) String deactivate,
-//                           @RequestParam(value = "userId", required = false) Long userId,
-//                           Model model, Principal currentUser){
-//        User user=userService.findByUsername(currentUser.getName());
-//        if(user.getAuthorities().toString().contains("ROLE_ADMIN") && userId!=null){
-//            myCard.setUser(userService.findById(userId));
-//            System.out.println("=================this ADMIN edit card ");
-//        }
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        try{
-//            if(deactivate.length()>6) {
-//                Date date = dateFormat.parse(deactivate);
-//                myCard.setDeactivate(date);
-//            }
-//        }catch(ParseException e){
-//            e.printStackTrace();
-//        }
-//        System.out.println("===================Finish card edit "+myCard+" Date lengh="+deactivate.length());
-//
-//        cardServices.editCard(myCard, currentUser);
-//
-//        if (ref.contains("/adminCards")){
-//            return "redirect:/adminCards";
-//        }
-//        return "redirect:/myCards";
-//    }
-//
-//    @RequestMapping(value = "/cardDelete/{card.id}", method = RequestMethod.GET)
-//    public String cardDelete(@PathVariable("card.id") Long id,
-//                             Model model, HttpServletRequest request){
-//        cardServices.deleteCard(id);
-//        if (request.getHeader("referer").contains("/adminCards")){
-//            return "redirect:/adminCards";
-//        }
-//        return "redirect:/myCards";
-//    }
+    //**Управление типами карт
+    @RequestMapping(value = "/admin/cardsType", method = RequestMethod.GET)
+    public String cardsType(Model model){
+        model.addAttribute("cardTypeList",cardTypeServices.getCardType());
+        return "adminCardType";
+    }
+
+    @RequestMapping(value = "/admin/cardType/add", method = RequestMethod.POST)
+    public String cardsTypeAdd(@ModelAttribute("cardType") CardType cardType,
+                                Model model){
+        if(cardType.getId()==null){
+            try {
+                cardTypeServices.addCardType(cardType);
+            }catch (org.springframework.dao.DataIntegrityViolationException e) {
+                System.err.println("==== ERROR =====> addCardType: " + e);
+                return "redirect:/admin/cardsType?error=ERROR! Invalid card'Type's (The card should not be empty)";
+            }
+            System.out.println("======>add cardType "+cardType);
+        }else{
+            System.out.println("======>edit cardType "+cardType);
+            try{
+                cardTypeServices.editCardType(cardType);
+            }catch (org.springframework.dao.DataIntegrityViolationException e) {
+                System.err.println("==== ERROR =====> addCardType: " + e);
+            return "redirect:/admin/cardsType?error=ERROR! Invalid card'Type's (The card should not be empty)";
+            }
+        }
+        model.addAttribute("cardTypeList",cardTypeServices.getCardType());
+        return "redirect:/admin/cardsType";
+    }
+    @RequestMapping(value = "/admin/cardTypeEdit/{cardType.id}", method = RequestMethod.GET)
+    public String adminEditCardType(@PathVariable("cardType.id") Long id, Model model){
+        model.addAttribute("cardType", cardTypeServices.getCardTypeById(id));
+        model.addAttribute("cardTypeList",cardTypeServices.getCardType());
+        return "adminCardType";
+    }
+    @RequestMapping(value = "/admin/cardTypeDelete/{cardType.id}", method = RequestMethod.GET)
+    public String adminCardTypeDelete(@PathVariable("cardType.id") Long id, Model model){
+        try{
+            cardTypeServices.deleteCardType(id);
+            System.out.println("======>edit cardType "+id);
+        }catch (org.springframework.dao.DataIntegrityViolationException e) {
+            System.err.println("==== ERROR =====> addCardType: " + e);
+            return "redirect:/admin/cardsType?error=ERROR! Invalid card'Type's (There are cards relating to this type of)";
+        }
+        return "redirect:/admin/cardsType";
+    }
+    @RequestMapping(value = "/goods/{good.name}", method = RequestMethod.GET)
+    public String getGoodByPartName(@PathVariable("good.name") String goodName, Model model){
+        System.out.println(" Товар имя которого начинается на "+goodName);
+        List<Long> tochList=new ArrayList<Long>();
+        tochList.add(1L);
+        tochList.add(2L);
+       for(GoodsRemnants goodsRemnants : goodsRemnantsServices.gatRemnantsByPartName(goodName, tochList)){
+            System.out.println("Товар-"+goodsRemnants.getGoods()+"  Аптека-"+goodsRemnants.getTradePoint()+" Колич-"+goodsRemnants.getCount());
+        }
+        return "redirect:/";
+    }
 }
+
+

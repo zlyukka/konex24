@@ -85,5 +85,10 @@ public class UserServiceImpl implements UserService {
         }
         userDao.saveAndFlush(newUserData);
     }
+
+    @Override
+    public User finUserByMobile(String mobile) {
+        return userDao.findByMobile(mobile);
+    }
 }
 

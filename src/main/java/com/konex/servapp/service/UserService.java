@@ -20,4 +20,6 @@ public interface UserService {
     List<User> listUsers();
 
     void editUser(Long id, User user);
+
+    User finUserByMobile(String mobile);
 }

@@ -1,0 +1,93 @@
+    <div th:fragment="header" name="header">
+        <link th:href="@{/css/bootstrap.min.css}" type="text/css" href="css/bootstrap.min.css" rel="stylesheet" />
+        <link th:href="@{/css/common.css}" type="text/css" href="css/common.css" rel="stylesheet" />
+
+        <script th:src="@{/js/html5shiv.min.js}" src="js/html5shiv.min.js"></script>
+        <script th:src="@{/js/respond.min.js}" src="js/respond.min.js"></script>
+
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a style="padding-top: 0px;" class="navbar-brand" href="http://www.konex.com.ua">
+                        <!--<a class="header-logo" href="http://www.konex.com.ua">-->
+                        <img style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;" class="navbar-brand" src="http://www.konex.com.ua/wp-content/themes/konex/images/header-logo.png"/>
+                    </a>
+
+
+
+                    <!--<form role="search" class="navbar-form navbar-left">
+                        <input class="form-group" type="text"/>
+                        <input class="form-group" type="submit" value="Пошук"/>
+                    </form>-->
+
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#responsive-menu">
+                        <span class="sr-only">Открыт навигацию</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+                <div class="collapse navbar-collapse" id="responsive-menu">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Про нас<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Путкт 1.1</a></li>
+                                <li><a href="#">Путкт 1.2</a></li>
+                                <li><a href="#">Путкт 1.3</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Путкт 1.4</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Види діяльності<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Путкт 2.1</a></li>
+                                <li><a href="#">Путкт 2.2</a></li>
+                                <li><a href="#">Путкт 2.3</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Путкт 2.4</a></li>
+                            </ul>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/admin}" href="/admin">Адмін</a></li>
+                        <li><a href="#"></a></li>
+                        <li><a href="#"></a></li>
+                        <a href="/hello">
+                            <img th:src="@{/images/playrix-dragon.png}" style="margin-right: 15px; padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;" src="images/playrix-dragon.png" class="navbar-brand avatar img-circle" alt="avatar"/>
+                        </a>
+                        <li class="dropdown row">
+                            <a  href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <b th:inline="text"> [[${#httpServletRequest.remoteUser}]] </b>
+
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/hello}" href="/hello">Мої дані</a></li>
+                                <li><input id="editProfile" form="editUser" type="submit" class="btn btn-link" value="Редагувати"/></li>
+                                <li class="divider"></li>
+                                <li><input form="logout" type="submit" class="btn btn-link" value="Вийти"/></li>
+                            </ul>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <form id="hello" th:action="@{/hello}" method="get">
+        </form>
+
+        <form id="logout" th:action="@{/logout}" method="post">
+        </form>
+
+        <form id="editUser" th:action="@{/editUser}" method="post">
+        </form>
+    </div>
+
+    <div th:fragment="footer" style="text-align: center; background-color: #2e6da4">
+        <h1>
+            Footer
+        </h1>
+    </div>

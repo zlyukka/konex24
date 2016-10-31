@@ -12,6 +12,10 @@
 
 </head>
 <body>
+
+<div th:replace="static/static :: header"></div>
+
+
 <div class="container">
     <form th:action="@{/login}" action="/login" method="POST" class="form-signin">
 
@@ -47,7 +51,7 @@
 
 </div>
 <!-- /container -->
-
+<div th:replace="static/static :: footer"></div>
 <script th:src="@{/js/jquery-3.1.0.min.js}" src="js/jquery-3.1.0.min.js"></script>
 <script th:src="@{/js/bootstrap.min.js}" src="js/bootstrap.min.js"></script>
 <script th:src="@{/js/script.js}" src="js/script.js"></script>

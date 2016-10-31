@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.konex</groupId>
@@ -51,9 +51,9 @@
 		</dependency>
 
 		<!--<dependency>-->
-			<!--<groupId>com.h2database</groupId>-->
-			<!--<artifactId>h2</artifactId>-->
-			<!--<version>1.4.185</version>-->
+		<!--<groupId>com.h2database</groupId>-->
+		<!--<artifactId>h2</artifactId>-->
+		<!--<version>1.4.185</version>-->
 		<!--</dependency>-->
 
 		<dependency>
@@ -63,11 +63,11 @@
 		</dependency>
 
 		<!--<dependency>-->
-			<!--<groupId>org.hibernate</groupId>-->
-			<!--<artifactId>hibernate-entitymanager</artifactId>-->
-			<!--<version>4.2.0.Final</version>-->
+		<!--<groupId>org.hibernate</groupId>-->
+		<!--<artifactId>hibernate-entitymanager</artifactId>-->
+		<!--<version>4.2.0.Final</version>-->
 		<!--<version>4.3.5.Final</version>-->
-			<!--<scope>runtime</scope>-->
+		<!--<scope>runtime</scope>-->
 		<!--</dependency>-->
 
 		<dependency>

@@ -12,7 +12,7 @@ import java.util.List;
 public interface CardServices {
     void addCard(Card myCard);
 
-    void editCard(Card curCard, Principal currentUser);
+    void editCard(Card curCard);
 
     void deleteCard(long id);
 
