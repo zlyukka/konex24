@@ -25,9 +25,9 @@ public class TradePoint implements DomainObject {
     @Column(name="address")
     private String addres;
 
-//    @Column(name="update_date")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date update;
+    @Column(name="update_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date update;
 
     @Column(name="tel")
     private String tel;
@@ -58,7 +58,7 @@ public class TradePoint implements DomainObject {
                 ", name='" + name + '\'' +
                 ", mol='" + mol + '\'' +
                 ", addres='" + addres + '\'' +
-//                ", update=" + update +
+                ", update=" + update +
                 ", tel='" + tel + '\'' +
                 ", region='" + region + '\'' +
                 ", town='" + town + '\'' +
@@ -78,7 +78,7 @@ public class TradePoint implements DomainObject {
         if (!name.equals(that.name)) return false;
         if (!mol.equals(that.mol)) return false;
         if (!addres.equals(that.addres)) return false;
-//        if (!update.equals(that.update)) return false;
+        if (!update.equals(that.update)) return false;
         if (!tel.equals(that.tel)) return false;
         if (!region.equals(that.region)) return false;
         if (!town.equals(that.town)) return false;
@@ -93,7 +93,7 @@ public class TradePoint implements DomainObject {
         result = 31 * result + name.hashCode();
         result = 31 * result + mol.hashCode();
         result = 31 * result + addres.hashCode();
-//        result = 31 * result + update.hashCode();
+        result = 31 * result + update.hashCode();
         result = 31 * result + tel.hashCode();
         result = 31 * result + region.hashCode();
         result = 31 * result + town.hashCode();
@@ -134,13 +134,13 @@ public class TradePoint implements DomainObject {
         this.addres = addres;
     }
 
-//    public Date getUpdate() {
-//        return update;
-//    }
-//
-//    public void setUpdate(Date update) {
-//        this.update = update;
-//    }
+    public Date getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(Date update) {
+        this.update = update;
+    }
 
     public String getTel() {
         return tel;
